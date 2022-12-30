@@ -20,7 +20,7 @@ v.cpus = 2
 8. Уловный выражения, проверяет наличие каталога tmp и возвращает значение 0 или 1 (ложь или истина)
 В данном примере -d проверяет является ли tmp каталогом
 
-9. vagrant@vagrant:~$ mkdir /tmp/new_path_directory/
+9. ""vagrant@vagrant:~$ mkdir /tmp/new_path_directory/
 vagrant@vagrant:~$ cd /bin/bash /tmp/new_patn_directory/
 -bash: cd: too many arguments
 vagrant@vagrant:~$ cp /bin/bash /tmp/new_patn_directory/
@@ -30,7 +30,7 @@ vagrant@vagrant:~$ PATH=/tmp/new_path_directory/:$PATH
 vagrant@vagrant:~$ type -a bash
 bash is /tmp/new_path_directory/bash
 bash is /usr/bin/bash
-bash is /bin/bash
+bash is /bin/bash""
 
 10. at используется для назначения одноразового задания на заданное время,
 batch — для назначения одноразовых задач, которые должны выполняться,
