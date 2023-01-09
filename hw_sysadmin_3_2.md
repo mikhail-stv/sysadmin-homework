@@ -1,6 +1,4 @@
-1. Команда ```cd``` является встроенной в ```shell```, ее выполнение происходит быстро, 
-так как оболоке не надо искать ее по заданному путив переменной ```PATH```, 
-а так же не надо создавать проццесс для ее выполнения.
+1. Команда ```cd``` является встроенной в ```shell```, ее выполнение происходит быстро, так как оболоке не надо искать ее по заданному путив переменной ```PATH```, а так же не надо создавать проццесс для ее выполнения.
 
 2. 
 ```vagrant@vagrant: grep some_string some_file -c
@@ -12,17 +10,17 @@ vagrant@vagrant: grep some_string some_file | wc -l
 
 4. Запуск команды в первой сессии терминала:
 
-   ```
-   vagrant@vagrant:/$ ls /mount 2>/dev/pts/2
-   vagrant@vagrant:/$
-   ```
+```
+vagrant@vagrant:/$ ls /mount 2>/dev/pts/2
+vagrant@vagrant:/$
+```
 
 Вывод ошибки во второй сессии терминала:
 
-   ```
-   vagrant@vagrant:~$ ls: cannot access 'root': No such file or directory
-   ls: cannot access 'root': No such file or directory
-   ```
+```
+vagrant@vagrant:~$ ls: cannot access 'root': No such file or directory
+ls: cannot access 'root': No such file or directory
+```
  
 5. 
 ```
@@ -45,16 +43,12 @@ vagrant@vagrant:~$
 ```
 
 6. 
-   ```
-   root@Sky:/dev/pts# echo TEST PTY > /dev/tty1
-   root@Sky:/dev/pts#
-   ```
+```root@Sky:/dev/pts# echo TEST PTY > /dev/tty1```
+```root@Sky:/dev/pts#```
 
 В tty получим вывод: 
 
-```
-mike@sky: TETS PTY
-```
+```mike@sky: TETS PTY```
 
 7. ```bash 5>&1``` создаст новый дескрипотр 5:
 
@@ -124,7 +118,7 @@ vagrant@vagrant:~$ ps -a (запомнить PID процесса)
 ```  
 
 ```screen -S new``` (через screen запустить отдельную сессию)  
-```reptyr 'PID процесса'```
+```reptyr 'PID процесса```
 
 14. Команда ```tee``` считывет ввод и записывает вывод одновременно и в файл, и в stdout.
 В данном примере команда получает вывод из stdin, перенаправленный через pipe от 
