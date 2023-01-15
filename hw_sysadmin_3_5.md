@@ -49,4 +49,49 @@ The partition table has been altered.
 Calling ioctl() to re-read partition table.
 Syncing disks.
 ```
+5. Используя sfdisk, перенесите данную таблицу разделов на второй диск.
+```
+vagrant@sysadm-fs:~$ lsblk
+NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+loop0                       7:0    0 67.8M  1 loop /snap/lxd/22753
+loop1                       7:1    0   62M  1 loop /snap/core20/1611
+loop3                       7:3    0 49.8M  1 loop /snap/snapd/17950
+loop4                       7:4    0 63.3M  1 loop /snap/core20/1778
+loop5                       7:5    0 91.9M  1 loop /snap/lxd/24061
+sda                         8:0    0   64G  0 disk 
+├─sda1                      8:1    0    1M  0 part 
+├─sda2                      8:2    0    2G  0 part /boot
+└─sda3                      8:3    0   62G  0 part 
+  └─ubuntu--vg-ubuntu--lv 253:0    0   31G  0 lvm  /
+sdb                         8:16   0  2.5G  0 disk 
+├─sdb1                      8:17   0    2G  0 part 
+└─sdb2                      8:18   0  511M  0 part 
+sdc                         8:32   0  2.5G  0 disk 
+``` 
+```
+vagrant@sysadm-fs:~$ sudo sfdisk -d /dev/sda > sda.txt
+vagrant@sysadm-fs:~$ sudo sfdisk -d /dev/sdb > sdb.txt
+vagrant@sysadm-fs:~$ sudo sfdisk /dev/sdc < sdb.txt
+```
+6. Соберите mdadm RAID1 на паре разделов 2 Гб.
+```
+vagrant@sysadm-fs:~$ sudo mdadm --create --verbose /dev/md1 -l 1 -n 2 /dev/sd{b1,c1}
+mdadm: Note: this array has metadata at the start and
+    may not be suitable as a boot device.  If you plan to
+    store '/boot' on this device please ensure that
+    your boot-loader understands md/v1.x metadata, or use
+    --metadata=0.90
+mdadm: size set to 2094080K
+Continue creating array? y
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md1 started.
+```
+7. Соберите mdadm RAID0 на второй паре маленьких разделов.
+```
+vagrant@sysadm-fs:~$ sudo mdadm --create --verbose /dev/md2 -l 0 -n 2 /dev/sd{b2,c2}
+mdadm: chunk size defaults to 512K
+mdadm: Defaulting to version 1.2 metadata
+mdadm: array /dev/md2 started.
+```
+8. Создайте 2 независимых PV на получившихся md-устройствах.
 
