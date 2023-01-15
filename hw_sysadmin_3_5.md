@@ -456,8 +456,8 @@ vagrant@sysadm-fs:~$ echo $?
 0
 ```
 
-20. 
-
+20. Погасите тестовый хост, ```vagrant destroy```.
+```vagrant destroy```
 
 
 
