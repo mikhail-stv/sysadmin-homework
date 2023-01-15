@@ -4,8 +4,50 @@
 2. Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?
 Нет, так как имеет тот же inode, то права будут одни и теже
 -
+```
+vagrant@sysadm-fs:~$ touch test_link
+vagrant@sysadm-fs:~$ ln test_link test_link_hard
+```
 -
+```
+vagrant@sysadm-fs:~$ stat test_link test_link_hard
+  File: test_link
+  Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
+Device: fd00h/64768d	Inode: 1310812     Links: 2
+Access: (0664/-rw-rw-r--)  Uid: ( 1000/ vagrant)   Gid: ( 1000/ vagrant)
+Access: 2023-01-15 17:41:06.899158278 +0000
+Modify: 2023-01-15 17:41:06.899158278 +0000
+Change: 2023-01-15 17:41:30.574989186 +0000
+ Birth: -
+  File: test_link_hard
+  Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
+Device: fd00h/64768d	Inode: 1310812     Links: 2
+Access: (0664/-rw-rw-r--)  Uid: ( 1000/ vagrant)   Gid: ( 1000/ vagrant)
+Access: 2023-01-15 17:41:06.899158278 +0000
+Modify: 2023-01-15 17:41:06.899158278 +0000
+Change: 2023-01-15 17:41:30.574989186 +0000
+ Birth: -
+```
 -
+```
+vagrant@sysadm-fs:~$ stat test_link test_link_hard
+  File: test_link
+  Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
+Device: fd00h/64768d	Inode: 1310812     Links: 2
+Access: (0665/-rw-rw-r-x)  Uid: ( 1000/ vagrant)   Gid: ( 1000/ vagrant)
+Access: 2023-01-15 17:41:06.899158278 +0000
+Modify: 2023-01-15 17:41:06.899158278 +0000
+Change: 2023-01-15 17:43:50.596958739 +0000
+ Birth: -
+  File: test_link_hard
+  Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
+Device: fd00h/64768d	Inode: 1310812     Links: 2
+Access: (0665/-rw-rw-r-x)  Uid: ( 1000/ vagrant)   Gid: ( 1000/ vagrant)
+Access: 2023-01-15 17:41:06.899158278 +0000
+Modify: 2023-01-15 17:41:06.899158278 +0000
+Change: 2023-01-15 17:43:50.596958739 +0000
+ Birth: -
+```
 
 3. Сделайте vagrant destroy на имеющийся инстанс Ubuntu. Замените содержимое Vagrantfile 
 
@@ -93,5 +135,17 @@ mdadm: chunk size defaults to 512K
 mdadm: Defaulting to version 1.2 metadata
 mdadm: array /dev/md2 started.
 ```
+```
+vagrant@sysadm-fs:~$ cat /proc/mdstat
+Personalities : [linear] [multipath] [raid0] [raid1] [raid6] [raid5] [raid4] [raid10] 
+md2 : active raid0 sdc2[1] sdb2[0]
+      1042432 blocks super 1.2 512k chunks
+      
+md1 : active raid1 sdc1[1] sdb1[0]
+      2094080 blocks super 1.2 [2/2] [UU]
+      
+unused devices: <none>
+```
+
 8. Создайте 2 независимых PV на получившихся md-устройствах.
 
