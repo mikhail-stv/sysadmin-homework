@@ -1,5 +1,5 @@
 1. Изучить sparse (разряженные) файлы
-Изучил 
+Данный тип файлов позволяет с большей эффективностью использовать дисксовое пространство, так как занимают меньший объем дисквого пространства, чем их реальный объем.  
 
 2. Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?
 Нет, так как имеет тот же inode, то права будут одни и теже
@@ -7,9 +7,6 @@
 ```
 vagrant@sysadm-fs:~$ touch test_link
 vagrant@sysadm-fs:~$ ln test_link test_link_hard
-```
--
-```
 vagrant@sysadm-fs:~$ stat test_link test_link_hard
   File: test_link
   Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
@@ -456,7 +453,7 @@ vagrant@sysadm-fs:~$ echo $?
 0
 ```
 
-20. Погасите тестовый хост, ```vagrant destroy```.
+20. Погасите тестовый хост, ```vagrant destroy```.  
 ```vagrant destroy```
 
 
