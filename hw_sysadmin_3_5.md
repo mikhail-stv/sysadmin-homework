@@ -246,4 +246,73 @@ vagrant@sysadm-fs:~$ sudo pvdisplay
 ```
 
 10. Создайте LV размером 100 Мб, указав его расположение на PV с RAID0.
+```
+vagrant@sysadm-fs:~$ sudo lvcreate -L 100M -n logical_volume1 volume_group_1 /dev/md2
+  Logical volume "logical_volume1" created.
+```
 
+11. Создайте mkfs.ext4 ФС на получившемся LV.
+```
+vagrant@sysadm-fs:~$ sudo lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/ubuntu-vg/ubuntu-lv
+  LV Name                ubuntu-lv
+  VG Name                ubuntu-vg
+  LV UUID                uVU4nO-Z2nN-pe9b-ehaW-yje4-GZwy-tEtd4j
+  LV Write Access        read/write
+  LV Creation host, time ubuntu-server, 2022-12-11 06:19:22 +0000
+  LV Status              available
+  # open                 1
+  LV Size                <31.00 GiB
+  Current LE             7935
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:0
+   
+  --- Logical volume ---
+  LV Path                /dev/volume_group_1/logical_volume1
+  LV Name                logical_volume1
+  VG Name                volume_group_1
+  LV UUID                1skzAu-2VS3-CRrq-Y3st-l0et-MCjv-qnfAhm
+  LV Write Access        read/write
+  LV Creation host, time sysadm-fs, 2023-01-15 18:06:36 +0000
+  LV Status              available
+  # open                 0
+  LV Size                100.00 MiB
+  Current LE             25
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     4096
+  Block device           253:1
+  ```
+  ```
+  vagrant@sysadm-fs:~$ lsblk
+NAME                                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+loop0                                  7:0    0 67.8M  1 loop  /snap/lxd/22753
+loop1                                  7:1    0   62M  1 loop  /snap/core20/1611
+loop3                                  7:3    0 49.8M  1 loop  /snap/snapd/17950
+loop4                                  7:4    0 63.3M  1 loop  /snap/core20/1778
+loop5                                  7:5    0 91.9M  1 loop  /snap/lxd/24061
+sda                                    8:0    0   64G  0 disk  
+├─sda1                                 8:1    0    1M  0 part  
+├─sda2                                 8:2    0    2G  0 part  /boot
+└─sda3                                 8:3    0   62G  0 part  
+  └─ubuntu--vg-ubuntu--lv            253:0    0   31G  0 lvm   /
+sdb                                    8:16   0  2.5G  0 disk  
+├─sdb1                                 8:17   0    2G  0 part  
+│ └─md1                                9:1    0    2G  0 raid1 
+└─sdb2                                 8:18   0  511M  0 part  
+  └─md2                                9:2    0 1018M  0 raid0 
+    └─volume_group_1-logical_volume1 253:1    0  100M  0 lvm   
+sdc                                    8:32   0  2.5G  0 disk  
+├─sdc1                                 8:33   0    2G  0 part  
+│ └─md1                                9:1    0    2G  0 raid1 
+└─sdc2                                 8:34   0  511M  0 part  
+  └─md2                                9:2    0 1018M  0 raid0 
+    └─volume_group_1-logical_volume1 253:1    0  100M  0 lvm 
+```
+
+12. 
