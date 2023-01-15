@@ -391,4 +391,75 @@ sdc                                    8:32   0  2.5G  0 disk
     └─volume_group_1-logical_volume1 253:1    0  100M  0 lvm   /tmp/lw
 ```
 
-15. 
+15. Протестируйте целостность файла:
+```
+vagrant@sysadm-fs:~$ gzip -t /tmp/lw/test.gz
+vagrant@sysadm-fs:~$ echo $?
+0
+```
+
+16. Используя pvmove, переместите содержимое PV с RAID0 на RAID1.
+```
+vagrant@sysadm-fs:~$ sudo pvmove -n /dev/volume_group_1/logical_volume1 /dev/md2 /dev/md1
+  /dev/md2: Moved: 20.00%
+  /dev/md2: Moved: 100.00%
+```
+```
+vagrant@sysadm-fs:~$ lsblk
+NAME                                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
+loop0                                  7:0    0 67.8M  1 loop  /snap/lxd/22753
+loop1                                  7:1    0   62M  1 loop  /snap/core20/1611
+loop3                                  7:3    0 49.8M  1 loop  /snap/snapd/17950
+loop4                                  7:4    0 63.3M  1 loop  /snap/core20/1778
+loop5                                  7:5    0 91.9M  1 loop  /snap/lxd/24061
+sda                                    8:0    0   64G  0 disk  
+├─sda1                                 8:1    0    1M  0 part  
+├─sda2                                 8:2    0    2G  0 part  /boot
+└─sda3                                 8:3    0   62G  0 part  
+  └─ubuntu--vg-ubuntu--lv            253:0    0   31G  0 lvm   /
+sdb                                    8:16   0  2.5G  0 disk  
+├─sdb1                                 8:17   0    2G  0 part  
+│ └─md1                                9:1    0    2G  0 raid1 
+│   └─volume_group_1-logical_volume1 253:1    0  100M  0 lvm   /tmp/lw
+└─sdb2                                 8:18   0  511M  0 part  
+  └─md2                                9:2    0 1018M  0 raid0 
+sdc                                    8:32   0  2.5G  0 disk  
+├─sdc1                                 8:33   0    2G  0 part  
+│ └─md1                                9:1    0    2G  0 raid1 
+│   └─volume_group_1-logical_volume1 253:1    0  100M  0 lvm   /tmp/lw
+└─sdc2                                 8:34   0  511M  0 part  
+  └─md2                                9:2    0 1018M  0 raid0
+```
+
+17. Сделайте --fail на устройство в вашем RAID1 md.
+```
+vagrant@sysadm-fs:~$ sudo mdadm /dev/md1 --fail /dev/sdb1
+mdadm: set /dev/sdb1 faulty in /dev/md1
+```
+
+18. Подтвердите выводом dmesg, что RAID1 работает в деградированном состоянии.
+```
+vagrant@sysadm-fs:~$ dmesg -T | grep md1
+[Sun Jan 15 17:36:47 2023] md/raid1:md1: not clean -- starting background reconstruction
+[Sun Jan 15 17:36:47 2023] md/raid1:md1: active with 2 out of 2 mirrors
+[Sun Jan 15 17:36:47 2023] md1: detected capacity change from 0 to 2144337920
+[Sun Jan 15 17:36:47 2023] md: resync of RAID array md1
+[Sun Jan 15 17:36:57 2023] md: md1: resync done.
+[Sun Jan 15 18:40:25 2023] md/raid1:md1: Disk failure on sdb1, disabling device.
+                           md/raid1:md1: Operation continuing on 1 devices.
+```
+
+19. Протестируйте целостность файла, несмотря на "сбойный" диск он должен продолжать быть доступен:
+```
+vagrant@sysadm-fs:~$ gzip -t /tmp/lw/test.gz
+vagrant@sysadm-fs:~$ echo $?
+0
+```
+
+20. 
+
+
+
+
+
+
