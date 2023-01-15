@@ -245,13 +245,12 @@ vagrant@sysadm-fs:~$ sudo pvdisplay
   PV UUID               cNW0pr-hbwS-6U3Y-CsAs-BIUv-rNH3-k0qa1U
 ```
 
-10. Создайте LV размером 100 Мб, указав его расположение на PV с RAID0.
+10. Создайте LV размером 100 Мб, указав его расположение на PV с RAID0.  
 ```
 vagrant@sysadm-fs:~$ sudo lvcreate -L 100M -n logical_volume1 volume_group_1 /dev/md2
   Logical volume "logical_volume1" created.
 ```
-
-11. Создайте mkfs.ext4 ФС на получившемся LV.
+Проверим  
 ```
 vagrant@sysadm-fs:~$ sudo lvdisplay
   --- Logical volume ---
@@ -315,4 +314,31 @@ sdc                                    8:32   0  2.5G  0 disk
     └─volume_group_1-logical_volume1 253:1    0  100M  0 lvm 
 ```
 
-12. 
+11. Создайте mkfs.ext4 ФС на получившемся LV.
+```
+vagrant@sysadm-fs:~$ sudo mkfs.ext4 /dev/volume_group_1/logical_volume1
+mke2fs 1.45.5 (07-Jan-2020)
+Creating filesystem with 25600 4k blocks and 25600 inodes
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (1024 blocks): done
+Writing superblocks and filesystem accounting information: done
+```
+
+12. Смонтируйте этот раздел в любую директорию, например, /tmp/new
+```
+vagrant@sysadm-fs:~$ mkdir /tmp/lw
+vagrant@sysadm-fs:~$ sudo mount /dev/volume_group_1/logical_volume1 /tmp/lw
+```
+```
+vagrant@sysadm-fs:~$ df -Th | grep "^/dev"
+/dev/mapper/ubuntu--vg-ubuntu--lv          ext4       31G  3.7G   26G  13% /
+/dev/loop0                                 squashfs   68M   68M     0 100% /snap/lxd/22753
+/dev/loop1                                 squashfs   62M   62M     0 100% /snap/core20/1611
+/dev/sda2                                  ext4      2.0G  106M  1.7G   6% /boot
+/dev/loop3                                 squashfs   50M   50M     0 100% /snap/snapd/17950
+/dev/loop4                                 squashfs   64M   64M     0 100% /snap/core20/1778
+/dev/loop5                                 squashfs   92M   92M     0 100% /snap/lxd/24061
+/dev/mapper/volume_group_1-logical_volume1 ext4       93M   24K   86M   1% /tmp/lw
+```
