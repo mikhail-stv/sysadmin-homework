@@ -148,4 +148,102 @@ unused devices: <none>
 ```
 
 8. Создайте 2 независимых PV на получившихся md-устройствах.
+```
+vagrant@sysadm-fs:~$ sudo pvcreate /dev/md1 /dev/md2
+  Physical volume "/dev/md1" successfully created.
+  Physical volume "/dev/md2" successfully created.
+```
+```
+vagrant@sysadm-fs:~$ sudo pvscan
+  PV /dev/sda3   VG ubuntu-vg       lvm2 [<62.00 GiB / 31.00 GiB free]
+  PV /dev/md1                       lvm2 [<2.00 GiB]
+  PV /dev/md2                       lvm2 [1018.00 MiB]
+  Total: 3 [<64.99 GiB] / in use: 1 [<62.00 GiB] / in no VG: 2 [2.99 GiB]
+```
+9. Создайте общую volume-group на этих двух PV.
+```
+vagrant@sysadm-fs:~$ sudo vgcreate volume_group_1 /dev/md1 /dev/md2
+  Volume group "volume_group_1" successfully created
+```
+```
+vagrant@sysadm-fs:~$ sudo vgdisplay
+  --- Volume group ---
+  VG Name               ubuntu-vg
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <62.00 GiB
+  PE Size               4.00 MiB
+  Total PE              15871
+  Alloc PE / Size       7935 / <31.00 GiB
+  Free  PE / Size       7936 / 31.00 GiB
+  VG UUID               UZfqXZ-997r-hT24-kqSU-tjd6-fB2t-Up7O0f
+   
+  --- Volume group ---
+  VG Name               volume_group_1
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  1
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                0
+  Open LV               0
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               <2.99 GiB
+  PE Size               4.00 MiB
+  Total PE              765
+  Alloc PE / Size       0 / 0   
+  Free  PE / Size       765 / <2.99 GiB
+  VG UUID               0lS2c2-Kr2f-V7Bl-ygG7-1Ec6-Z4nn-EvrHuu
+```
+```
+vagrant@sysadm-fs:~$ sudo pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               ubuntu-vg
+  PV Size               <62.00 GiB / not usable 0   
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              15871
+  Free PE               7936
+  Allocated PE          7935
+  PV UUID               zsjUIf-lkCP-mcQc-77AQ-EnRV-aROu-2kC8c0
+   
+  --- Physical volume ---
+  PV Name               /dev/md1
+  VG Name               volume_group_1
+  PV Size               <2.00 GiB / not usable 0   
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              511
+  Free PE               511
+  Allocated PE          0
+  PV UUID               TQsYVD-fQF1-2UVe-ZSOl-cI41-QaPC-13j5iZ
+   
+  --- Physical volume ---
+  PV Name               /dev/md2
+  VG Name               volume_group_1
+  PV Size               1018.00 MiB / not usable 2.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              254
+  Free PE               254
+  Allocated PE          0
+  PV UUID               cNW0pr-hbwS-6U3Y-CsAs-BIUv-rNH3-k0qa1U
+```
+
+10. Создайте LV размером 100 Мб, указав его расположение на PV с RAID0.
 
