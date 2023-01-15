@@ -1,8 +1,8 @@
-1. Изучить sparse (разряженные) файлы
+1. Изучить sparse (разряженные) файлы.  
 Данный тип файлов позволяет с большей эффективностью использовать дисксовое пространство, так как занимают меньший объем дисквого пространства, чем их реальный объем.  
 
-2. Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?
-Нет, так как имеет тот же inode, то права будут одни и теже
+2. Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?  
+Нет, так как имеет тот же inode, то права будут одни и теже  
 -
 ```
 vagrant@sysadm-fs:~$ touch test_link
@@ -46,9 +46,9 @@ Change: 2023-01-15 17:43:50.596958739 +0000
  Birth: -
 ```
 
-3. Сделайте vagrant destroy на имеющийся инстанс Ubuntu. Замените содержимое Vagrantfile 
+3. Сделайте vagrant destroy на имеющийся инстанс Ubuntu. Замените содержимое Vagrantfile  
 
-4. Используя fdisk, разбейте первый диск на 2 раздела: 2 Гб, оставшееся пространство.
+4. Используя fdisk, разбейте первый диск на 2 раздела: 2 Гб, оставшееся пространство.  
 ```
 vagrant@sysadm-fs:~$ sudo fdisk /dev/sdb
 
@@ -88,7 +88,7 @@ The partition table has been altered.
 Calling ioctl() to re-read partition table.
 Syncing disks.
 ```
-5. Используя sfdisk, перенесите данную таблицу разделов на второй диск.
+5. Используя sfdisk, перенесите данную таблицу разделов на второй диск.  
 ```
 vagrant@sysadm-fs:~$ lsblk
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
@@ -112,7 +112,7 @@ vagrant@sysadm-fs:~$ sudo sfdisk -d /dev/sda > sda.txt
 vagrant@sysadm-fs:~$ sudo sfdisk -d /dev/sdb > sdb.txt
 vagrant@sysadm-fs:~$ sudo sfdisk /dev/sdc < sdb.txt
 ```
-6. Соберите mdadm RAID1 на паре разделов 2 Гб.
+6. Соберите mdadm RAID1 на паре разделов 2 Гб.  
 ```
 vagrant@sysadm-fs:~$ sudo mdadm --create --verbose /dev/md1 -l 1 -n 2 /dev/sd{b1,c1}
 mdadm: Note: this array has metadata at the start and
@@ -125,7 +125,7 @@ Continue creating array? y
 mdadm: Defaulting to version 1.2 metadata
 mdadm: array /dev/md1 started.
 ```
-7. Соберите mdadm RAID0 на второй паре маленьких разделов.
+7. Соберите mdadm RAID0 на второй паре маленьких разделов.  
 ```
 vagrant@sysadm-fs:~$ sudo mdadm --create --verbose /dev/md2 -l 0 -n 2 /dev/sd{b2,c2}
 mdadm: chunk size defaults to 512K
@@ -144,7 +144,7 @@ md1 : active raid1 sdc1[1] sdb1[0]
 unused devices: <none>
 ```
 
-8. Создайте 2 независимых PV на получившихся md-устройствах.
+8. Создайте 2 независимых PV на получившихся md-устройствах.  
 ```
 vagrant@sysadm-fs:~$ sudo pvcreate /dev/md1 /dev/md2
   Physical volume "/dev/md1" successfully created.
@@ -157,7 +157,7 @@ vagrant@sysadm-fs:~$ sudo pvscan
   PV /dev/md2                       lvm2 [1018.00 MiB]
   Total: 3 [<64.99 GiB] / in use: 1 [<62.00 GiB] / in no VG: 2 [2.99 GiB]
 ```
-9. Создайте общую volume-group на этих двух PV.
+9. Создайте общую volume-group на этих двух PV.  
 ```
 vagrant@sysadm-fs:~$ sudo vgcreate volume_group_1 /dev/md1 /dev/md2
   Volume group "volume_group_1" successfully created
@@ -311,7 +311,7 @@ sdc                                    8:32   0  2.5G  0 disk
     └─volume_group_1-logical_volume1 253:1    0  100M  0 lvm 
 ```
 
-11. Создайте mkfs.ext4 ФС на получившемся LV.
+11. Создайте mkfs.ext4 ФС на получившемся LV.  
 ```
 vagrant@sysadm-fs:~$ sudo mkfs.ext4 /dev/volume_group_1/logical_volume1
 mke2fs 1.45.5 (07-Jan-2020)
@@ -323,7 +323,7 @@ Creating journal (1024 blocks): done
 Writing superblocks and filesystem accounting information: done
 ```
 
-12. Смонтируйте этот раздел в любую директорию, например, /tmp/new
+12. Смонтируйте этот раздел в любую директорию, например, /tmp/new  
 ```
 vagrant@sysadm-fs:~$ mkdir /tmp/lw
 vagrant@sysadm-fs:~$ sudo mount /dev/volume_group_1/logical_volume1 /tmp/lw
@@ -340,7 +340,7 @@ vagrant@sysadm-fs:~$ df -Th | grep "^/dev"
 /dev/mapper/volume_group_1-logical_volume1 ext4       93M   24K   86M   1% /tmp/lw
 ```
 
-13. Поместите туда тестовый файл, например wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz.
+13. Поместите туда тестовый файл, например wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz.  
 ```
 vagrant@sysadm-fs:~$ sudo wget https://mirror.yandex.ru/ubuntu/ls-lR.gz -O /tmp/new/test.gz -O /tmp/lw/test.gz
 --2023-01-15 18:27:21--  https://mirror.yandex.ru/ubuntu/ls-lR.gz
@@ -360,7 +360,7 @@ drwx------ 2 root root    16384 Jan 15 18:15 lost+found
 -rw-r--r-- 1 root root 24416140 Jan 15 15:38 test.gz
 ```
 
-14. Прикрепите вывод ```lsblk```.
+14. Прикрепите вывод ```lsblk```.  
 ```
 vagrant@sysadm-fs:~$ lsblk
 NAME                                 MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
@@ -388,14 +388,14 @@ sdc                                    8:32   0  2.5G  0 disk
     └─volume_group_1-logical_volume1 253:1    0  100M  0 lvm   /tmp/lw
 ```
 
-15. Протестируйте целостность файла:
+15. Протестируйте целостность файла:  
 ```
 vagrant@sysadm-fs:~$ gzip -t /tmp/lw/test.gz
 vagrant@sysadm-fs:~$ echo $?
 0
 ```
 
-16. Используя pvmove, переместите содержимое PV с RAID0 на RAID1.
+16. Используя pvmove, переместите содержимое PV с RAID0 на RAID1.  
 ```
 vagrant@sysadm-fs:~$ sudo pvmove -n /dev/volume_group_1/logical_volume1 /dev/md2 /dev/md1
   /dev/md2: Moved: 20.00%
@@ -428,13 +428,13 @@ sdc                                    8:32   0  2.5G  0 disk
   └─md2                                9:2    0 1018M  0 raid0
 ```
 
-17. Сделайте --fail на устройство в вашем RAID1 md.
+17. Сделайте --fail на устройство в вашем RAID1 md.  
 ```
 vagrant@sysadm-fs:~$ sudo mdadm /dev/md1 --fail /dev/sdb1
 mdadm: set /dev/sdb1 faulty in /dev/md1
 ```
 
-18. Подтвердите выводом dmesg, что RAID1 работает в деградированном состоянии.
+18. Подтвердите выводом dmesg, что RAID1 работает в деградированном состоянии.  
 ```
 vagrant@sysadm-fs:~$ dmesg -T | grep md1
 [Sun Jan 15 17:36:47 2023] md/raid1:md1: not clean -- starting background reconstruction
@@ -446,7 +446,7 @@ vagrant@sysadm-fs:~$ dmesg -T | grep md1
                            md/raid1:md1: Operation continuing on 1 devices.
 ```
 
-19. Протестируйте целостность файла, несмотря на "сбойный" диск он должен продолжать быть доступен:
+19. Протестируйте целостность файла, несмотря на "сбойный" диск он должен продолжать быть доступен:  
 ```
 vagrant@sysadm-fs:~$ gzip -t /tmp/lw/test.gz
 vagrant@sysadm-fs:~$ echo $?
@@ -455,7 +455,6 @@ vagrant@sysadm-fs:~$ echo $?
 
 20. Погасите тестовый хост, ```vagrant destroy```.  
 ```vagrant destroy```
-
 
 
 
