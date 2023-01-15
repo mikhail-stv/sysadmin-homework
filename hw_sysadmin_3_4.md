@@ -3,24 +3,62 @@
  - предусмотреть возможность добавления опций к запускаемому процессу через внешний файл (посмотреть, например, на systemctl cat cron)
  - удостовериться, что с помощью systemctl процесс корректно стартует, завершается, а после перезагрузки автоматически поднимается
 
-- Создаем Systemd Unit  
+- Создаем Systemd Unit   
+
 ```$ sudo nano /etc/systemd/system/node_exporter.service```  
+```
+[Unit]  
+Description=Prometheus Node Exporter  
+Wants=network-online.target  
+After=network-online.target  
+  
+[Service]  
+User=node_exporter  
+Group=node_exporter  
+Type=simple  
+ExecStart=/usr/local/bin/node_exporter  
+  
+[Install]  
+WantedBy=multi-user.target  
+```
+- Добавление переменную окружения   
+```
+$ nano /etc/default/node_exporter
+OPTIONS = "--collector.textfile.directory /var/lib/node_exporter/textfile_collector"
+```
+
+- Добавляение сервиса в автозагрузку    
+
+```sudo systemctl enable --now node_exporter```
+```
+root@vagrant:/tmp/node_exporter-1.5.0.linux-amd64# sudo systemctl enable --now node_exporter
+Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.service → /etc/systemd/system/node_exporter.service.
+```
   ```
-  [Unit]  
-  Description=Prometheus Node Exporter  
-  Wants=network-online.target  
-  After=network-online.target  
-  
-  [Service]  
-  User=node_exporter  
-  Group=node_exporter  
-  Type=simple  
-  ExecStart=/usr/local/bin/node_exporter  
-  
-  [Install]  
-  WantedBy=multi-user.target  
-  ```
-  
+  root@vagrant:/tmp/node_exporter-1.5.0.linux-amd64# sudo systemctl status node_exporter
+● node_exporter.service - Prometheus Node Exporter
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2023-01-15 14:45:58 UTC; 11s ago
+   Main PID: 13977 (node_exporter)
+      Tasks: 4 (limit: 1065)
+     Memory: 2.8M
+     CGroup: /system.slice/node_exporter.service
+             └─13977 /usr/local/bin/node_exporter --collector.textfile.directory /var/lib/node_exporter/>
+
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.590Z caller=node_exporter.go:117 le>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.590Z caller=node_exporter.go:117 le>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.590Z caller=node_exporter.go:117 le>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.590Z caller=node_exporter.go:117 le>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.590Z caller=node_exporter.go:117 le>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.590Z caller=node_exporter.go:117 le>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.590Z caller=node_exporter.go:117 le>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.590Z caller=node_exporter.go:117 le>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.591Z caller=tls_config.go:232 level>
+Jan 15 14:45:58 vagrant node_exporter[13977]: ts=2023-01-15T14:45:58.591Z caller=tls_config.go:235 level>
+root@vagrant:/tmp/node_exporter-1.5.0.linux-amd64# sudo ss -pnltu | grep 9100
+tcp     LISTEN   0        4096                    *:9100                *:*      users:(("node_exporter",pid=13977,fd=3))
+```
+- После перезагрузки сервис успешно запустился  
 
 2. Ознакомьтесь с опциями node_exporter и выводом ```/metrics``` по-умолчанию. Приведите несколько опций, которые вы бы выбрали для базового мониторинга хоста по CPU, памяти, диску и сети.
 - CPU
@@ -62,12 +100,18 @@ COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 netdata 2972 netdata    5u  IPv4  28925      0t0  TCP vagrant:19999 (LISTEN)
 netdata 2972 netdata   67u  IPv4  31632      0t0  TCP vagrant:19999->0.0.0.0:53625 (ESTABLISHED)
 ```
+После проброса порта на своем ПК зашел на ```localhost:19999```  
 
-4. Можно ли по выводу dmesg понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе виртуализации?
-```vagrant@vagrant:~$ dmesg | grep -i virtual```
--
--
--
+4. Можно ли по выводу dmesg понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе виртуализации?  
+Да возможно, данный выод показувает, что ОС запущена на системе виртуализации  
+```
+vagrant@vagrant:/home/vagrant# dmesg | grep -i virtual
+[    0.000000] DMI: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
+[    0.001615] CPU MTRRs all blank - virtualized system.
+[    0.041192] Booting paravirtualized kernel on KVM
+[    0.205238] Performance Events: PMU not available due to virtualization, using software events only.
+[    3.183424] systemd[1]: Detected virtualization oracle.
+```
 
 5. Настроки ```sysctl fs.nr_open``` на системе по-умолчанию, что означает этот параметр. Какой другой существующий лимит не позволит достичь такого числа (```ulimit --
 help```)?
@@ -97,9 +141,15 @@ root@vagrant:/home/vagrant# ulimit -Hn
 - жесткий предел ```nofile``` не может превышать ```/proc/sys/fs/nr_open```  
 
 6. Запустить любой долгоживущий процесс (не ```ls```, который отработает мгновенно, а, например, ```sleep 1h```) в отдельном неймспейсе процессов; показать, что данный процесс работает под PID 1 через ```nsenter```. Под root запускать - ```sudo -i```. Под обычным пользователем требуются дополнительные опции - ```--map-root-user```.  
--
--
--
+```
+root@vagrant:~# ps -e |grep sleep
+   `636 pts/2    00:00:00 sleep
+root@vagrant:~# nsenter --target 1636 --pid --mount
+root@vagrant:/# ps
+    PID TTY          TIME CMD
+      2 pts/0    00:00:00 bash
+     11 pts/0    00:00:00 ps
+```
 
 7. Найти информацию о том, что такое ```:(){ :|:& };:```  
 Данная команда является логической бомбой. Она оперирует определением функции с именем ```‘:‘```, которая вызывает сама себя дважды: один раз на переднем плане и один раз в фоне. Она продолжает своё выполнение снова и снова, пока система не зависнет
