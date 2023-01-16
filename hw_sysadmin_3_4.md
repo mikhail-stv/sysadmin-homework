@@ -17,16 +17,12 @@ User=node_exporter
 Group=node_exporter  
 Type=simple  
 EnvironmentFile=/etc/default/node_exporter
-ExecStart=/usr/local/bin/node_exporter  
+ExecStart=/usr/local/bin/node_exporter $OPTIONS
   
 [Install]  
 WantedBy=multi-user.target  
 ```
-- Добавление переменную окружения   
-```
-$ nano /etc/default/node_exporter
-OPTIONS = "--collector.textfile.directory /var/lib/node_exporter/textfile_collector"
-```
+- В файле /etc/default/node_exporter прописываются значения переменных. Далее в unit-файле в разделе [Service] указывается, откуда значения параметров забирать ```EnvironmentFile=/etc/default/node_exporter``` и указывается сам параметр через $ ```ExecStart=/usr/local/bin/node_exporter -C $OPTIONS```
 
 - Добавляение сервиса в автозагрузку    
 
