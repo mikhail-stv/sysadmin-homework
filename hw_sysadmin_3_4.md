@@ -16,6 +16,7 @@ After=network-online.target
 User=node_exporter  
 Group=node_exporter  
 Type=simple  
+EnvironmentFile=/etc/default/node_exporter
 ExecStart=/usr/local/bin/node_exporter  
   
 [Install]  
