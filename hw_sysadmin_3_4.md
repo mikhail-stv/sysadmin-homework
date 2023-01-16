@@ -142,14 +142,67 @@ root@vagrant:/home/vagrant# ulimit -Hn
 
 6. Запустить любой долгоживущий процесс (не ```ls```, который отработает мгновенно, а, например, ```sleep 1h```) в отдельном неймспейсе процессов; показать, что данный процесс работает под PID 1 через ```nsenter```. Под root запускать - ```sudo -i```. Под обычным пользователем требуются дополнительные опции - ```--map-root-user```.  
 ```
-root@vagrant:~# ps -e |grep sleep
-   `636 pts/2    00:00:00 sleep
-root@vagrant:~# nsenter --target 1636 --pid --mount
+vagrant@vagrant-fs:~$ sudo -i
+root@vagrant-fs:~# unshare -f --pid --mount-proc sleep 1h
+bg
+^Z
+[1]+  Stopped                 unshare -f --pid --mount-proc sleep 1h
+root@vagrant:~# ps
+    PID TTY          TIME CMD
+   1708 pts/0    00:00:00 sudo
+   1710 pts/0    00:00:00 bash
+   1736 pts/0    00:00:00 unshare
+   1737 pts/0    00:00:00 sleep
+   1739 pts/0    00:00:00 ps
+root@vagrant:~# nsenter --target 1737 --pid --mount
 root@vagrant:/# ps
     PID TTY          TIME CMD
+      1 pts/0    00:00:00 sleep
       2 pts/0    00:00:00 bash
-     11 pts/0    00:00:00 ps
+     13 pts/0    00:00:00 ps
+root@vagrant:/# 
 ```
 
 7. Найти информацию о том, что такое ```:(){ :|:& };:```  
-Данная команда является логической бомбой. Она оперирует определением функции с именем ```‘:‘```, которая вызывает сама себя дважды: один раз на переднем плане и один раз в фоне. Она продолжает своё выполнение снова и снова, пока система не зависнет
+Данная команда является логической бомбой. Она оперирует определением функции с именем ```‘:‘```, которая вызывает сама себя дважды: один раз на переднем плане и один раз в фоне. Она продолжает своё выполнение снова и снова, пока система не зависнет.  
+Выход из зацикливания проиcходит при превышении параметров по умолчанию, которые моно посмотреть с помощью ```ulimit -a```:  
+```
+vagrant@vagrant:~$ ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 7579
+max locked memory       (kbytes, -l) 65536
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 1024
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 3703
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+```
+Можно изменить данный лимит с помощью ulimit -a, для 50 процессов надо выставить ulimit -u 50:
+```
+vagrant@vagrant:~$ ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 7579
+max locked memory       (kbytes, -l) 65536
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 1024
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 50
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
+```
+Либо наложить ограничение на количество процессов, которые может порождать пользователь или группа пользователей, можно отредактировав файл /etc/security/limits.conf
