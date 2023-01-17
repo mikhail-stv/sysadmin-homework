@@ -3,11 +3,11 @@
 
 2. Могут ли файлы, являющиеся жесткой ссылкой на один объект, иметь разные права доступа и владельца? Почему?  
 Нет, так как имеет тот же inode, то права будут одни и теже  
--
+- для примера создам файл test_link и жесткую ссылку test_link_hard 
 ```
-vagrant@sysadm-fs:~$ touch test_link
-vagrant@sysadm-fs:~$ ln test_link test_link_hard
-vagrant@sysadm-fs:~$ stat test_link test_link_hard
+vagrant@vagrant:~$ touch test_link
+vagrant@vagrant:~$ ln test_link test_link_hard
+vagrant@vagrant:~$ stat test_link test_link_hard
   File: test_link
   Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
 Device: fd00h/64768d	Inode: 1310812     Links: 2
@@ -25,9 +25,10 @@ Modify: 2023-01-15 17:41:06.899158278 +0000
 Change: 2023-01-15 17:41:30.574989186 +0000
  Birth: -
 ```
--
+- изменим права для tect_link с 0664 на 0665
 ```
-vagrant@sysadm-fs:~$ stat test_link test_link_hard
+vagrant@vagrant:~$ chmod 0665 test_link
+vagrant@vagrant:~$ stat test_link test_link_hard
   File: test_link
   Size: 0         	Blocks: 0          IO Block: 4096   regular empty file
 Device: fd00h/64768d	Inode: 1310812     Links: 2
@@ -45,6 +46,7 @@ Modify: 2023-01-15 17:41:06.899158278 +0000
 Change: 2023-01-15 17:43:50.596958739 +0000
  Birth: -
 ```
+- для 0665 права поменялись в обоих случаях
 
 3. Сделайте vagrant destroy на имеющийся инстанс Ubuntu. Замените содержимое Vagrantfile  
 
