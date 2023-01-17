@@ -90,7 +90,6 @@ The partition table has been altered.
 Calling ioctl() to re-read partition table.
 Syncing disks.
 ```
-5. Используя sfdisk, перенесите данную таблицу разделов на второй диск.  
 ```
 vagrant@sysadm-fs:~$ lsblk
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
@@ -109,6 +108,9 @@ sdb                         8:16   0  2.5G  0 disk
 └─sdb2                      8:18   0  511M  0 part 
 sdc                         8:32   0  2.5G  0 disk 
 ``` 
+
+5. Используя sfdisk, перенесите данную таблицу разделов на второй диск.  
+
 ```
 vagrant@sysadm-fs:~$ sudo sfdisk -d /dev/sda > sda.txt
 vagrant@sysadm-fs:~$ sudo sfdisk -d /dev/sdb > sdb.txt
