@@ -90,3 +90,50 @@ mstepanov@Admin:~$ dig +short А dns.google
 ```
 8. Проверьте PTR записи для IP адресов из задания 7. Какое доменное имя привязано к IP?
 ```
+mstepanov@Admin:~$ dig -x 8.8.8.8~
+
+; <<>> DiG 9.18.4-2ubuntu2-Ubuntu <<>> -x 8.8.8.8~
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 14872
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 1, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 65494
+;; QUESTION SECTION:
+;8~.8.8.8.in-addr.arpa.		IN	PTR
+
+;; AUTHORITY SECTION:
+8.8.8.in-addr.arpa.	60	IN	SOA	ns1.google.com. dns-admin.google.com. 504516018 900 900 1800 60
+
+;; Query time: 32 msec
+;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)
+;; WHEN: Thu Jan 26 17:56:28 MSK 2023
+;; MSG SIZE  rcvd: 110
+```
+```
+mstepanov@Admin:~$ dig -x 8.8.4.4
+
+; <<>> DiG 9.18.4-2ubuntu2-Ubuntu <<>> -x 8.8.4.4
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 58088
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 2, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 65494
+;; QUESTION SECTION:
+;4.4.8.8.in-addr.arpa.		IN	PTR
+
+;; ANSWER SECTION:
+4.4.8.8.in-addr.arpa.	78276	IN	PTR	dns.google.
+
+;; AUTHORITY SECTION:
+8.8.in-addr.arpa.	84170	IN	NS	ns2.level3.net.
+8.8.in-addr.arpa.	84170	IN	NS	ns1.level3.net.
+
+;; Query time: 12 msec
+;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)
+;; WHEN: Thu Jan 26 17:57:28 MSK 2023
+;; MSG SIZE  rcvd: 119
+```
