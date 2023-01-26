@@ -12,59 +12,43 @@ mstepanov@Admin:~$ wget -qO- eth0.me
 185.22.207.105
 ```
 
-4. mstepanov@Admin:~$ whois 185.22.207.105 
+4. Какому провайдеру принадлежит ваш IP адрес? Какой автономной системе AS?
 ```
-% This is the RIPE Database query service.
-% The objects are in RPSL format.
-%
-% The RIPE Database is subject to Terms and Conditions.
-% See http://www.ripe.net/db/support/db-terms-conditions.pdf
+mstepanov@Admin:~$ whois 185.22.207.105
+...
+...
+% Information related to '185.22.204.0/22AS42339'
 
-% Note: this output has been filtered.
-%       To receive output for a database update, use the "-B" flag.
-
-% Information related to '185.22.206.0 - 185.22.207.255'
-
-% Abuse contact for '185.22.206.0 - 185.22.207.255' is 'noc@chtp.net'
-
-inetnum:        185.22.206.0 - 185.22.207.255
-netname:        RU-CHAIKASPB-20130403
-descr:          Chaika Telecom Petersburg Limited Company
-country:        RU
-org:            ORG-CTPL1-RIPE
-admin-c:        CHTP3-RIPE
-tech-c:         CHTP3-RIPE
-status:         ASSIGNED PA
+route:          185.22.204.0/22
+descr:          "Chaika Telecom Petersburg" LTD
+origin:         AS42339
 mnt-by:         CHTP-MNT
-mnt-lower:      CHTP-MNT
-mnt-domains:    CHTP-MNT
-mnt-routes:     CHTP-MNT
-created:        2013-04-03T12:22:38Z
-last-modified:  2018-05-07T08:18:41Z
-source:         RIPE # Filtered
+created:        2013-04-04T08:49:00Z
+last-modified:  2013-04-04T08:50:17Z
+source:         RIPE
 
-organisation:   ORG-CTPL1-RIPE
-org-name:       Chaika Telecom Petersburg Limited Company
-country:        RU
-org-type:       LIR
-address:        Salova 56
-address:        192102
-address:        SAINT-PETERSBURG
-address:        RUSSIAN FEDERATION
-phone:          +78123477060
-fax-no:         +78124497090
-admin-c:        LY10-RIPE
-admin-c:        CHTP3-RIPE
-admin-c:        CHTP2-RIPE
-admin-c:        CHTP5-RIPE
-mnt-ref:        RIPE-NCC-HM-MNT
-mnt-by:         CHTP-MNT
-mnt-ref:        CHTP-MNT
-mnt-by:         RIPE-NCC-HM-MNT
-tech-c:         CHTP3-RIPE
-abuse-c:        STOP
-created:        2007-01-31T11:11:04Z
-last-modified:  2022-07-11T12:23:21Z
-source:         RIPE # Filtered
 ```
-
+5. Через какие сети проходит пакет, отправленный с вашего компьютера на адрес 8.8.8.8? Через какие AS?
+```
+mstepanov@Admin:~$ traceroute 8.8.8.8
+traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
+ 1  10.1.1.1 (10.1.1.1)  10.481 ms  12.439 ms  12.629 ms
+ 2  254.120.72.77.chtp.net (77.72.120.254)  13.527 ms  13.564 ms  13.722 ms
+ 3  93.123.72.77.chtp.net (77.72.123.93)  14.462 ms  14.573 ms  14.702 ms
+ 4  BGP2-KM12.chtp.net (46.28.224.86)  13.943 ms  14.137 ms  14.231 ms
+ 5  google-spb2.spb.cloud-ix.net (31.28.18.199)  15.042 ms  14.897 ms  15.221 ms
+ 6  74.125.244.132 (74.125.244.132)  15.737 ms 74.125.244.180 (74.125.244.180)  11.450 ms 74.125.244.132 (74.125.244.132)  16.769 ms
+ 7  72.14.232.85 (72.14.232.85)  14.010 ms 142.251.61.219 (142.251.61.219)  18.918 ms 72.14.232.85 (72.14.232.85)  14.184 ms
+ 8  216.239.58.65 (216.239.58.65)  18.203 ms 172.253.64.51 (172.253.64.51)  18.352 ms 142.251.61.221 (142.251.61.221)  18.553 ms
+ 9  172.253.51.237 (172.253.51.237)  17.681 ms 216.239.63.129 (216.239.63.129)  17.479 ms 72.14.237.201 (72.14.237.201)  17.855 ms
+10  * * *
+11  * * *
+12  * * *
+13  * * *
+14  * * *
+15  * * *
+16  * * *
+17  * * *
+18  dns.google (8.8.8.8)  18.781 ms * *
+```
+6. Повторите задание 5 в утилите ```mtr```. На каком участке наибольшая задержка - delay?
