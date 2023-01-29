@@ -30,8 +30,7 @@ Status Code: 200
 Remote Address: 151.101.193.69:443
 Referrer Policy: strict-origin-when-cross-origin
 ```
-
-![](https://drive.google.com/file/d/1HFG6b85oRgVfvRr05mGOtKAskratDhlH/view?usp=share_link)
+![](https://github.com/mikhail-stv/sysadmin-homework/blob/main/Snapshot_2023-01-29_20-41-50.png)
 
 3. Какой IP адрес у вас в интернете? 
 ```
