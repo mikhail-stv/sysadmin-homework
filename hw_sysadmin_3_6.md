@@ -31,7 +31,7 @@ Remote Address: 151.101.193.69:443
 Referrer Policy: strict-origin-when-cross-origin
 ```
 
-
+https://drive.google.com/file/d/1HFG6b85oRgVfvRr05mGOtKAskratDhlH/view?usp=share_link
 
 3. Какой IP адрес у вас в интернете? 
 ```
