@@ -1,9 +1,36 @@
-1. Подключиться утилитой телнет к сайту stackoverflow.com telnet stackoverflow.com 80
+1. Подключиться утилитой телнет к сайту stackoverflow.com telnet stackoverflow.com 80  
+```
+mike@Sky:~$ telnet stackoverflow.com 80
+Trying 151.101.65.69...
+Connected to stackoverflow.com.
+Escape character is '^]'.
+GET /questions HTTP/1.0
+HOST: stackoverflow.com
 
-
-
-
+HTTP/1.1 403 Forbidden
+Connection: close
+Content-Length: 1920
+Server: Varnish
+Retry-After: 0
+Content-Type: text/html
+Accept-Ranges: bytes
+Date: Sun, 29 Jan 2023 17:31:32 GMT
+Via: 1.1 varnish
+X-Served-By: cache-hhn-etou8220077-HHN
+X-Cache: MISS
+X-Cache-Hits: 0
+X-Timer: S1675013492.252468,VS0,VE1
+X-DNS-Prefetch-Control: off
+```
 2. Повторите задание 1 в браузере, используя консоль разработчика F12.
+```
+Request URL: https://stackoverflow.com/
+Request Method: GET
+Status Code: 200 
+Remote Address: 151.101.193.69:443
+Referrer Policy: strict-origin-when-cross-origin
+```
+
 
 
 3. Какой IP адрес у вас в интернете? 
