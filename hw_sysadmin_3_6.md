@@ -1,6 +1,6 @@
 1. Подключиться утилитой телнет к сайту stackoverflow.com telnet stackoverflow.com 80  
 ```
-mike@Sky:~$ telnet stackoverflow.com 80
+mstepanov@Admin:~$ telnet stackoverflow.com 80
 Trying 151.101.65.69...
 Connected to stackoverflow.com.
 Escape character is '^]'.
