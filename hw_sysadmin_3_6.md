@@ -22,6 +22,33 @@ X-Cache-Hits: 0
 X-Timer: S1675013492.252468,VS0,VE1
 X-DNS-Prefetch-Control: off
 ```
+"HTTP 403 Forbidden"  указывает, что сервер понял запрос, но отказывается его авторизовать.
+
+Сделал аналогичный запрос на ```ya.ru```
+```
+mstepanov@Admin:~$ telnet ya.ru 80
+Trying 87.250.250.242...
+Connected to ya.ru.
+Escape character is '^]'.
+GET /questions HTTP/1.0
+HOST: ya.ru             
+
+HTTP/1.1 302 Moved temporarily
+Content-Length: 0
+Location: https://ya.ru/questions
+NEL: {"report_to": "network-errors", "max_age": 100, "success_fraction": 0.001, "failure_fraction": 0.1}
+Report-To: { "group": "network-errors", "max_age": 100, "endpoints": [{"url": "https://dr.yandex.net/nel", "priority": 1}, {"url": "https://dr2.yandex.net/nel", "priority": 2}]}
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+X-Yandex-Req-Id: 1675101961355631-2680215709650431823-vla1-3235-vla-l7-balancer-8080-BAL
+set-cookie: is_gdpr=0; Path=/; Domain=.ya.ru; Expires=Wed, 29 Jan 2025 18:06:01 GMT
+set-cookie: is_gdpr_b=CPvaURDtowE=; Path=/; Domain=.ya.ru; Expires=Wed, 29 Jan 2025 18:06:01 GMT
+set-cookie: _yasc=ioh8dWE9rCKFG68gfK1HG+KMM4I35yvY7B6kOx48/gGPCPuR8Lqp56tFXohNlM8=; domain=.ya.ru; path=/; expires=Thu, 27-Jan-2033 18:06:01 GMT; secure
+
+Connection closed by foreign host.
+```
+Получил код ответа 302 Found означающий, что запрошенный ресурс был временно перемещён по адресу, указанному в заголовке  
+
 2. Повторите задание 1 в браузере, используя консоль разработчика F12.
 ```
 Request URL: https://stackoverflow.com/
@@ -56,26 +83,31 @@ source:         RIPE
 ```
 5. Через какие сети проходит пакет, отправленный с вашего компьютера на адрес 8.8.8.8? Через какие AS?
 ```
-mstepanov@Admin:~$ traceroute 8.8.8.8
+mstepanov@Admin:~$ traceroute -An 8.8.8.8
 traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
- 1  10.1.1.1 (10.1.1.1)  10.481 ms  12.439 ms  12.629 ms
- 2  254.120.72.77.chtp.net (77.72.120.254)  13.527 ms  13.564 ms  13.722 ms
- 3  93.123.72.77.chtp.net (77.72.123.93)  14.462 ms  14.573 ms  14.702 ms
- 4  BGP2-KM12.chtp.net (46.28.224.86)  13.943 ms  14.137 ms  14.231 ms
- 5  google-spb2.spb.cloud-ix.net (31.28.18.199)  15.042 ms  14.897 ms  15.221 ms
- 6  74.125.244.132 (74.125.244.132)  15.737 ms 74.125.244.180 (74.125.244.180)  11.450 ms 74.125.244.132 (74.125.244.132)  16.769 ms
- 7  72.14.232.85 (72.14.232.85)  14.010 ms 142.251.61.219 (142.251.61.219)  18.918 ms 72.14.232.85 (72.14.232.85)  14.184 ms
- 8  216.239.58.65 (216.239.58.65)  18.203 ms 172.253.64.51 (172.253.64.51)  18.352 ms 142.251.61.221 (142.251.61.221)  18.553 ms
- 9  172.253.51.237 (172.253.51.237)  17.681 ms 216.239.63.129 (216.239.63.129)  17.479 ms 72.14.237.201 (72.14.237.201)  17.855 ms
-10  * * *
-11  * * *
-12  * * *
-13  * * *
-14  * * *
+ 1  10.0.2.2 [*]  0.193 ms  0.154 ms  0.135 ms
+ 2  10.1.1.1 [*]  1.535 ms  1.289 ms  1.120 ms
+ 3  185.171.192.57 [AS8492]  2.275 ms  2.164 ms  2.034 ms
+ 4  172.29.194.40 [*]  2.599 ms  2.480 ms  5.000 ms
+ 5  172.29.193.142 [*]  2.238 ms  4.779 ms  4.598 ms
+ 6  172.29.255.3 [*]  4.572 ms  1.998 ms  1.941 ms
+ 7  172.29.255.5 [*]  1.910 ms  2.052 ms  2.333 ms
+ 8  172.29.255.7 [*]  2.311 ms  2.575 ms  2.541 ms
+ 9  85.114.1.12 [AS8492]  2.549 ms  2.532 ms  2.521 ms
+10  72.14.198.236 [AS15169]  2.514 ms  3.417 ms  3.388 ms
+11  74.125.244.180 [AS15169]  3.383 ms  3.376 ms 74.125.244.132 [AS15169]  14.249 ms
+12  142.251.61.219 [AS15169]  31.776 ms 72.14.232.85 [AS15169]  16.767 ms 216.239.48.163 [AS15169]  19.441 ms
+13  172.253.51.221 [AS15169]  21.178 ms 142.251.51.187 [AS15169]  27.673 ms 142.251.61.221 [AS15169]  6.642 ms
+14  * 142.250.209.35 [AS15169]  6.712 ms 209.85.254.179 [AS15169]  13.748 ms
 15  * * *
 16  * * *
 17  * * *
-18  dns.google (8.8.8.8)  18.781 ms * *
+18  * * *
+19  * * *
+20  * * *
+21  * * *
+22  * * *
+23  8.8.8.8 [AS15169/AS263411]  6.515 ms  14.747 ms  6.504 ms
 ```
 6. Повторите задание 5 в утилите ```mtr```. На каком участке наибольшая задержка - delay?
 ```
