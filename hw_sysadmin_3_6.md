@@ -135,6 +135,8 @@ HOST: Admin                       Loss%   Snt   Last   Avg  Best  Wrst StDev
  19. AS???    ???                 100.0     1    0.0   0.0   0.0   0.0   0.0
  20. AS15169  8.8.8.8              0.0%     1   15.9  15.9  15.9  15.9   0.0
 ```
+Наибольшая задержка - delay на 8ом Шаге  
+
 7. Какие DNS сервера отвечают за доменное имя dns.google? Какие A записи?
 ```
 mstepanov@Admin:~$ dig +short NS dns.google
