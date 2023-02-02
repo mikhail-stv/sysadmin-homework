@@ -161,12 +161,12 @@ Unused:
 Из какой подсети допустимо взять частные IP адреса? Маску выберите из расчета максимум 40-50 хостов внутри подсети.  
 
 7. Как проверить ARP таблицу в Linux, Windows? Как очистить ARP кеш полностью? Как из ARP таблицы удалить только один нужный IP?  
-Ubuntu
-```ip neighbour show``` - показать ARP таблицу
-```ip neighbour del [ip address] dev [interface]``` - удалить из ARP таблицы конкретный адрес
-```ip neighbour flush all``` - очищает таблицу ARP
+Ubuntu  
+```ip neighbour show``` - показать ARP таблицу  
+```ip neighbour del [ip address] dev [interface]``` - удалить из ARP таблицы конкретный адрес  
+```ip neighbour flush all``` - очищает таблицу ARP  
 
 Windows
-```arp -a``` - показать ARP таблицу
-```arp -d *``` - очистить таблицу ARP
-```arp -d [ip address]``` - удалить из ARP таблицы конкретный адрес \
+```arp -a``` - показать ARP таблицу  
+```arp -d *``` - очистить таблицу ARP  
+```arp -d [ip address]``` - удалить из ARP таблицы конкретный адрес  
