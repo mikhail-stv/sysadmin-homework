@@ -1,4 +1,4 @@
-1. wwwww
+1. Подключитесь к публичному маршрутизатору в интернет. Найдите маршрут к вашему публичному IP.  
 ```
 mstepanov@Admin:~$ telnet route-views.routeviews.org
 Trying 128.223.51.103...
@@ -187,4 +187,5 @@ Paths: (19 available, best #9, table default)
       rx pathid: 0, tx pathid: 0
 ```
       
-      2. 
+2. Создайте dummy0 интерфейс в Ubuntu. Добавьте несколько статических маршрутов. Проверьте таблицу маршрутизации.
+
