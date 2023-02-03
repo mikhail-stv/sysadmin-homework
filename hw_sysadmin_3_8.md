@@ -188,4 +188,29 @@ Paths: (19 available, best #9, table default)
 ```
       
 2. Создайте dummy0 интерфейс в Ubuntu. Добавьте несколько статических маршрутов. Проверьте таблицу маршрутизации.
+```
+mstepanov@Admin:~$ sudo modprobe -v dummy numdummies=1
+[sudo] password for mstepanov: 
+insmod /lib/modules/5.19.0-29-generic/kernel/drivers/net/dummy.ko numdummies=0 numdummies=1
+mstepanov@Admin:~$ lsmod | grep dummy
+dummy                  16384  0
+snd_seq_dummy          16384  0
+snd_seq                77824  9 snd_seq_midi,snd_seq_midi_event,snd_seq_dummy
+mstepanov@Admin:~$ ifconfig -a | grep dummy
+dummy0: flags=130<BROADCAST,NOARP>  mtu 1500
 
+
+```
+3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров.
+
+4. Проверьте используемые UDP сокеты в Ubuntu, какие протоколы и приложения используют эти порты?
+
+5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали
+
+-----------------------------------------------------------------------------------------------------------------
+
+6. Установите Nginx, настройте в режиме балансировщика TCP или UDP.
+
+7. Установите bird2, настройте динамический протокол маршрутизации RIP.
+
+8. Установите Netbox, создайте несколько IP префиксов, используя curl проверьте работу API.
