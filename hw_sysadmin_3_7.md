@@ -22,36 +22,53 @@ LLDP neighbors:
 3. Какая технология используется для разделения L2 коммутатора на несколько виртуальных сетей? Какой пакет и команды есть в Linux для этого?  
 Приведите пример конфига.
 Для разделения L2 коммутатора на несколько виртуальных сетей используется vlan. В Linux используется одноименный пакет - ```vlan```  
-
+  
+Независимо от того как настраивается vlan, его использование требует установленного пакета ```vlan```  
+```# sudo apt-get install vlan```
+  
 - Для ```ifconfig``` пример конфига
+настройки vlan так же, как и для сетевых интерфейсов, указываются в файле ```/etc/network/interfaces```
 ```
-:~$ sudo apt install net-tools
 nano /etc/network/interfaces 
-auto enp1s0.100
-iface enp1s0.100 inet static
-address 192.168.100.2
-netmask 255.255.255.0
-vlan-raw-device enp1s0.100
-ifconfig enp1s0.100 up
+auto vlan1400
+iface vlan1400 inet static
+        address 192.168.1.1
+        netmask 255.255.255.0
+        vlan_raw_device eth0
+```  
+или
 ```
+auto eth0.1400
+iface eth0.1400 inet static
+        address 192.168.1.1
+        netmask 255.255.255.0
+        vlan_raw_device eth0
+```  
+
 - Для ```netplan``` пример конфига:
 ```
-network:
-  ethernets:
-    enp1s0:
-      dhcp4: false
-      addresses:
-        - 192.168.122.201/24
-      gateway4: 192.168.122.1
-      nameservers:
-          addresses: [8.8.8.8, 1.1.1.1]
-    vlans:
-        enp1s0.100:
-            id: 100
-            link: enp1s0
-            addresses: [192.168.100.2/24]
+vlans:
+  vlan50:
+    id: 50
+    link: eth0
+    dhcp4: no
+    addresses: [192.168.1.2/24]
+    gateway: 192.168.1.1
+    routes:
+        - to: 192.168.1.2/24
+         via: 192.168.1.1
+         on-link: true
 ```
-```sudo netplan apply```
+- vlans: — объявляем блок настройки vlan.  
+- vlan50: — произвольное имя vlan интерфейса.  
+- id: — тег нашего vlan.  
+- link: — интерфейс через который vlan будет доступен.  
+- routes: — объявляем блок описания маршрутов.  
+- — to: — задаем адрес/подсеть до которой необходим маршрут.  
+- via: — указываем шлюз через которой будет доступна наша подсеть. 
+- on-link: — указываем что прописывать маршруты всегда при поднятии линка.  
+  
+Применение конфигурации — ```sudo netplan apply```
 
 4. Какие типы агрегации интерфейсов есть в Linux? Какие опции есть для балансировки нагрузки? Приведите пример конфига.  
 
@@ -69,34 +86,27 @@ mode=5 (balance-tlb)
 Входящие пакеты принимаются только активным сетевым интерфейсом, исходящий распределяется в зависимости от текущей загрузки каждого интерфейса. Не требует настройки коммутатора.
 - mode=6 (balance-alb)
 Тоже самое что 5, только входящий трафик тоже распределяется между интерфейсами. Не требует настройки коммутатора, но интерфейсы должны уметь изменять MAC.
-Пример конфига
+Пример конфига для netplan  
 ```
-~$ modprobe bonding
-~$ lsmod | grep bonding
+# modprobe bonding
+# lsmod | grep bonding
 bonding               147456  0
-~$ nano /etc/network/interfaces
-# The loopback network interface
-auto lo
-iface lo inet loopback
-
-# The primary network interface
-auto eth0
-iface eth0 inet manual
-bond-master bond0
-
-auto eth1
-iface eth1 inet manual
-bond-master bond0
-
-auto bond0
-iface bond0 inet static
-address 10.200.6.8
-gateway 10.200.6.6
-netmask 255.255.255.0
-network 10.200.6.0
-dns-nameservers 10.200.6.6
-bond-mode 0
-bond-miimon 100
+# nano /etc/netplan/*.yaml
+network: 
+    renderer: networkd 
+    version: 2 
+    ethernets: 
+        eth0:
+          dhcp4: no
+        eth1:
+          dhcp4: no
+    bonds: 
+      bond0:
+        dhcp4: no
+        interfaces: [eth0, eth1]
+        parameters:
+          mode: 802.3ad
+          mii-monitor-interval: 1
 bond-slaves eth0 eth1
 ```  
 5. Сколько IP адресов в сети с маской /29 ? Сколько /29 подсетей можно получить из сети с маской /24.  
