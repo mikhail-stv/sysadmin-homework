@@ -227,6 +227,7 @@ default via 172.16.0.1 dev enp10s0 proto static metric 100
 172.16.20.205 dev dummy0 scope link 
 192.168.70.0/24 dev dummy0 proto kernel scope link src 192.168.70.10
 ```
+  
 3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров.
 ```
 root@Admin:/home/mstepanov# ss -ltpn
@@ -240,14 +241,33 @@ LISTEN      0           2                             *:3389                    
 LISTEN      0           2                         [::1]:3350                     [::]:*          users:(("xrdp-sesman",pid=14392,fd=11))                                                        
 LISTEN      0           128                       [::1]:631                      [::]:*          users:(("cupsd",pid=200210,fd=6))
 ```
-22й порт для SSH
-3389 порт для RDP
-
+22й порт SSH
+53й порт DNS
+3389й порт RDP
+  
 4. Проверьте используемые UDP сокеты в Ubuntu, какие протоколы и приложения используют эти порты?
-
-
-
+```
+root@Admin:/home/mstepanov# ss -lupn
+State       Recv-Q      Send-Q           Local Address:Port              Peer Address:Port      Process                                                                                         
+UNCONN      0           0                  224.0.0.251:5353                   0.0.0.0:*          users:(("chrome",pid=2248,fd=261))                                                             
+UNCONN      0           0                  224.0.0.251:5353                   0.0.0.0:*          users:(("chrome",pid=2248,fd=188))                                                             
+UNCONN      0           0                  224.0.0.251:5353                   0.0.0.0:*          users:(("chrome",pid=2297,fd=104))                                                             
+UNCONN      0           0                      0.0.0.0:5353                   0.0.0.0:*          users:(("avahi-daemon",pid=763,fd=12))                                                         
+UNCONN      0           0                      0.0.0.0:47086                  0.0.0.0:*          users:(("1cv8c",pid=210899,fd=11))                                                             
+UNCONN      0           0                   127.0.0.54:53                     0.0.0.0:*          users:(("systemd-resolve",pid=677,fd=15))                                                      
+UNCONN      0           0                127.0.0.53%lo:53                     0.0.0.0:*          users:(("systemd-resolve",pid=677,fd=13))                                                      
+UNCONN      0           0                      0.0.0.0:631                    0.0.0.0:*          users:(("cups-browsed",pid=200211,fd=7))                                                       
+UNCONN      0           0                      0.0.0.0:50001                  0.0.0.0:*          users:(("anydesk",pid=926,fd=46))                                                              
+UNCONN      0           0                      0.0.0.0:58808                  0.0.0.0:*          users:(("winbox64.exe",pid=211632,fd=15),("wineserver64",pid=211576,fd=259))                   
+UNCONN      0           0                      0.0.0.0:1701                   0.0.0.0:*          users:(("xl2tpd",pid=1200,fd=3))                                                               
+UNCONN      0           0                      0.0.0.0:51044                  0.0.0.0:*          users:(("avahi-daemon",pid=763,fd=14))                                                         
+UNCONN      0           0                         [::]:5353                      [::]:*          users:(("avahi-daemon",pid=763,fd=13))                                                         
+UNCONN      0           0                         [::]:41073                     [::]:*          users:(("avahi-daemon",pid=763,fd=15))  
+```
+  
 5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали
+
+https://drive.google.com/file/d/1CkuqwQHupMIIgcXreNg7HHr3GFcLVqqY/view?usp=share_link
 
 -----------------------------------------------------------------------------------------------------------------
 
