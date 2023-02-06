@@ -228,8 +228,24 @@ default via 172.16.0.1 dev enp10s0 proto static metric 100
 192.168.70.0/24 dev dummy0 proto kernel scope link src 192.168.70.10
 ```
 3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров.
+```
+root@Admin:/home/mstepanov# ss -ltpn
+State       Recv-Q      Send-Q            Local Address:Port             Peer Address:Port      Process                                                                                         
+LISTEN      0           4096                 127.0.0.54:53                    0.0.0.0:*          users:(("systemd-resolve",pid=677,fd=16))                                                      
+LISTEN      0           4096              127.0.0.53%lo:53                    0.0.0.0:*          users:(("systemd-resolve",pid=677,fd=14))                                                      
+LISTEN      0           128                   127.0.0.1:631                   0.0.0.0:*          users:(("cupsd",pid=200210,fd=7))                                                              
+LISTEN      0           10                      0.0.0.0:7070                  0.0.0.0:*          users:(("anydesk",pid=926,fd=32))                                                              
+LISTEN      0           4096                          *:22                          *:*          users:(("sshd",pid=43215,fd=3),("systemd",pid=1,fd=156))                                       
+LISTEN      0           2                             *:3389                        *:*          users:(("xrdp",pid=14402,fd=11))                                                               
+LISTEN      0           2                         [::1]:3350                     [::]:*          users:(("xrdp-sesman",pid=14392,fd=11))                                                        
+LISTEN      0           128                       [::1]:631                      [::]:*          users:(("cupsd",pid=200210,fd=6))
+```
+22й порт для SSH
+3389 порт для RDP
 
 4. Проверьте используемые UDP сокеты в Ubuntu, какие протоколы и приложения используют эти порты?
+
+
 
 5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали
 
