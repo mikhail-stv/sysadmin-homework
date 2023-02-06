@@ -198,8 +198,34 @@ snd_seq_dummy          16384  0
 snd_seq                77824  9 snd_seq_midi,snd_seq_midi_event,snd_seq_dummy
 mstepanov@Admin:~$ ifconfig -a | grep dummy
 dummy0: flags=130<BROADCAST,NOARP>  mtu 1500
-
-
+root@Admin:/home/mstepanov# ip link set dev dummy0 up
+root@Admin:/home/mstepanov# ip addr add 192.168.70.10/24 dev dummy0
+root@Admin:/home/mstepanov# ip route add 172.16.20.205/32 dev dummy0
+root@Admin:/home/mstepanov# ip -c a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+2: enp10s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether ac:22:0b:50:7c:5b brd ff:ff:ff:ff:ff:ff
+    inet 172.16.10.1/20 brd 172.16.15.255 scope global noprefixroute enp10s0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::63fe:8425:9063:88ae/64 scope link noprefixroute 
+       valid_lft forever preferred_lft forever
+7: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/ether 6a:20:df:11:3b:4d brd ff:ff:ff:ff:ff:ff
+    inet 192.168.70.10/24 scope global dummy0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::6820:dfff:fe11:3b4d/64 scope link 
+       valid_lft forever preferred_lft forever
+root@Admin:/home/mstepanov# ip r
+default via 172.16.0.1 dev enp10s0 proto static metric 100 
+169.254.0.0/16 dev enp10s0 scope link metric 1000 
+172.16.0.0/20 dev enp10s0 proto kernel scope link src 172.16.10.1 metric 100 
+172.16.20.205 dev dummy0 scope link 
+192.168.70.0/24 dev dummy0 proto kernel scope link src 192.168.70.10
 ```
 3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров.
 
