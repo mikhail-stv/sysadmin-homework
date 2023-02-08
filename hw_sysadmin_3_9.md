@@ -129,7 +129,93 @@ vagrant@vagrant:~/testssl.sh$ ./testssl.sh -U --sneaky https://www.losst.pro/
  Done 2023-02-08 13:11:43 [  38s] -->> 5.45.95.135:443 (www.losst.pro) <<--
 ```
   
-5. Установите на Ubuntu ssh сервер, сгенерируйте новый приватный ключ. Скопируйте свой публичный ключ на другой сервер. Подключитесь к серверу по SSH-ключу.
+5. Установите на Ubuntu ssh сервер, сгенерируйте новый приватный ключ. Скопируйте свой публичный ключ на другой сервер. Подключитесь к серверу по SSH-ключу.  
+  
+```
+vagrant@vagrant:~$ systemctl status sshd.service
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/lib/systemd/system/ssh.service; enabled; vendor preset: enabled)
+     Active: active (running) since Wed 2023-02-08 07:42:25 UTC; 5h 32min ago
+       Docs: man:sshd(8)
+             man:sshd_config(5)
+   Main PID: 13944 (sshd)
+      Tasks: 1 (limit: 2236)
+     Memory: 1.7M
+        CPU: 24ms
+     CGroup: /system.slice/ssh.service
+             └─13944 "sshd: /usr/sbin/sshd -D [listener] 0 of 10-100 startups"
+
+Feb 08 07:42:25 vagrant systemd[1]: Starting OpenBSD Secure Shell server...
+Feb 08 07:42:25 vagrant sshd[13944]: Server listening on 0.0.0.0 port 22.
+Feb 08 07:42:25 vagrant sshd[13944]: Server listening on :: port 22.
+Feb 08 07:42:25 vagrant systemd[1]: Started OpenBSD Secure Shell server.
+vagrant@vagrant:~$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/vagrant/.ssh/id_rsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /home/vagrant/.ssh/id_rsa
+Your public key has been saved in /home/vagrant/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA256:h8zSXePibvAk/p46dfAHS5TdHHcOk5M1dwp+TE/MS8A vagrant@vagrant
+The key's randomart image is:
++---[RSA 3072]----+
+|            o+=@O|
+|           .oE=O@|
+|           .+ =.+|
+|       + o.ooo . |
+|      . S ++.o   |
+|       .ooo.+ .  |
+|       . *.. .   |
+|        o.o.     |
+|        .*=      |
++----[SHA256]-----+
+vagrant@vagrant:~$ ssh-copy-id vagrant@PPS
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/vagrant/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+
+/usr/bin/ssh-copy-id: ERROR: ssh: Could not resolve hostname pps: Temporary failure in name resolution
+
+vagrant@vagrant:~$ ssh-copy-id vagrant@172.16.10.57
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/vagrant/.ssh/id_rsa.pub"
+The authenticity of host '172.16.10.57 (172.16.10.57)' can't be established.
+ED25519 key fingerprint is SHA256:YIMwX/c+MUDlSf4AmSNx7dTm8QyZ5BiftQP7M/7cj2U.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? Y
+Please type 'yes', 'no' or the fingerprint: Y
+Please type 'yes', 'no' or the fingerprint: YES
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+vagrant@172.16.10.57's password: 
+Permission denied, please try again.
+vagrant@172.16.10.57's password: 
+Permission denied, please try again.
+vagrant@172.16.10.57's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'vagrant@172.16.10.57'"
+and check to make sure that only the key(s) you wanted were added.
+
+vagrant@vagrant:~$ ssh vagrant@172.16.10.57
+Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-56-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Wed Feb  8 01:27:55 PM UTC 2023
+
+  System load:  0.080078125        Processes:             111
+  Usage of /:   13.6% of 30.34GB   Users logged in:       1
+  Memory usage: 13%                IPv4 address for eth0: 10.0.2.15
+  Swap usage:   0%                 IPv4 address for eth1: 172.16.10.57
+
+
+This system is built by the Bento project by Chef Software
+More information can be found at https://github.com/chef/bento
+Last login: Wed Feb  8 07:25:42 2023 from 10.0.2.2
+```   
 
 6. Переименуйте файлы ключей из задания 5. Настройте файл конфигурации SSH клиента, так чтобы вход на удаленный сервер осуществлялся по имени сервера.
 
