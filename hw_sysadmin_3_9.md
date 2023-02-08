@@ -77,6 +77,8 @@ remote: Total 104 (delta 14), reused 31 (delta 4), pack-reused 0
 Receiving objects: 100% (104/104), 8.70 MiB | 6.48 MiB/s, done.
 Resolving deltas: 100% (14/14), done.
 vagrant@vagrant:~$ cd testssl.sh
+```
+```
 vagrant@vagrant:~/testssl.sh$ ./testssl.sh -U --sneaky https://www.losst.pro/
 
 ###########################################################
@@ -149,6 +151,8 @@ Feb 08 07:42:25 vagrant systemd[1]: Starting OpenBSD Secure Shell server...
 Feb 08 07:42:25 vagrant sshd[13944]: Server listening on 0.0.0.0 port 22.
 Feb 08 07:42:25 vagrant sshd[13944]: Server listening on :: port 22.
 Feb 08 07:42:25 vagrant systemd[1]: Started OpenBSD Secure Shell server.
+```
+```
 vagrant@vagrant:~$ ssh-keygen
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/vagrant/.ssh/id_rsa): 
@@ -170,26 +174,17 @@ The key's randomart image is:
 |        o.o.     |
 |        .*=      |
 +----[SHA256]-----+
-vagrant@vagrant:~$ ssh-copy-id vagrant@PPS
-/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/vagrant/.ssh/id_rsa.pub"
-/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
-
-/usr/bin/ssh-copy-id: ERROR: ssh: Could not resolve hostname pps: Temporary failure in name resolution
-
+```
+```
 vagrant@vagrant:~$ ssh-copy-id vagrant@172.16.10.57
 /usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/vagrant/.ssh/id_rsa.pub"
 The authenticity of host '172.16.10.57 (172.16.10.57)' can't be established.
 ED25519 key fingerprint is SHA256:YIMwX/c+MUDlSf4AmSNx7dTm8QyZ5BiftQP7M/7cj2U.
 This key is not known by any other names
 Are you sure you want to continue connecting (yes/no/[fingerprint])? Y
-Please type 'yes', 'no' or the fingerprint: Y
 Please type 'yes', 'no' or the fingerprint: YES
 /usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
 /usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
-vagrant@172.16.10.57's password: 
-Permission denied, please try again.
-vagrant@172.16.10.57's password: 
-Permission denied, please try again.
 vagrant@172.16.10.57's password: 
 
 Number of key(s) added: 1
@@ -197,6 +192,8 @@ Number of key(s) added: 1
 Now try logging into the machine, with:   "ssh 'vagrant@172.16.10.57'"
 and check to make sure that only the key(s) you wanted were added.
 
+```
+```
 vagrant@vagrant:~$ ssh vagrant@172.16.10.57
 Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-56-generic x86_64)
 
@@ -217,6 +214,39 @@ More information can be found at https://github.com/chef/bento
 Last login: Wed Feb  8 07:25:42 2023 from 10.0.2.2
 ```   
 
-6. Переименуйте файлы ключей из задания 5. Настройте файл конфигурации SSH клиента, так чтобы вход на удаленный сервер осуществлялся по имени сервера.
+6. Переименуйте файлы ключей из задания 5. Настройте файл конфигурации SSH клиента, так чтобы вход на удаленный сервер осуществлялся по имени сервера.  
+```
+vagrant@vagrant:~$ mv /home/vagrant/.ssh/id_rsa /home/vagrant/.ssh/apache_rsa
+vagrant@vagrant:~$ ls /home/vagrant/.ssh/
+apache_rsa  authorized_keys  id_rsa.pub  known_hosts  known_hosts.old
+vagrant@vagrant:~$ touch ~/.ssh/config && chmod 600 ~/.ssh/config
+vagrant@vagrant:~$ nano .ssh/config
+
+Host vagrant
+     HostName 172.16.10.57
+     User vagrant
+     IdentityFile ~/.ssh/apache_rsa
+     
+```
+```
+vagrant@vagrant:~$ ssh vagrant
+Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-56-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Wed Feb  8 01:39:47 PM UTC 2023
+
+  System load:  0.0                Processes:             114
+  Usage of /:   13.6% of 30.34GB   Users logged in:       1
+  Memory usage: 14%                IPv4 address for eth0: 10.0.2.15
+  Swap usage:   0%                 IPv4 address for eth1: 172.16.10.57
+
+
+This system is built by the Bento project by Chef Software
+More information can be found at https://github.com/chef/bento
+Last login: Wed Feb  8 13:28:38 2023 from 172.16.10.57
+```
 
 7. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.
