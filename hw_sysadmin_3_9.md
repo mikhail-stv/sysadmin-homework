@@ -250,3 +250,13 @@ Last login: Wed Feb  8 13:28:38 2023 from 172.16.10.57
 ```
 
 7. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.
+```
+mstepanov@Admin:~$ sudo tcpdump -c 100 -w for_analyze_wireshark.pcap
+tcpdump: listening on enp10s0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+100 packets captured
+111 packets received by filter
+0 packets dropped by kernel
+mstepanov@Admin:~$ wireshark
+```
+  
+![](https://github.com/mikhail-stv/sysadmin-homework/blob/main/wireshark.jpg)
