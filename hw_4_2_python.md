@@ -12,9 +12,9 @@ c = a + b
 
 | Вопрос  | Ответ |
 | ------------- | ------------- |
-| Какое значение будет присвоено переменной `c`?  | ???  |
-| Как получить для переменной `c` значение 12?  | ???  |
-| Как получить для переменной `c` значение 3?  | ???  |
+| Какое значение будет присвоено переменной `c`?  | TypeError: unsupported operand type(s) for +: 'int' and 'str'  |
+| Как получить для переменной `c` значение 12?  | c=str(a)+b |
+| Как получить для переменной `c` значение 3?  | c=a+int(b) |
 
 ------
 
@@ -40,8 +40,19 @@ for result in result_os.split('\n'):
 ```
 
 ### Ваш скрипт:
-```python
-???
+```
+#!/usr/bin/env python3
+
+import os
+
+bash_command = ["cd ~/netology/sysadm-homeworks", "git status"]
+result_os = os.popen(' && '.join(bash_command)).read()
+is_change = False
+for result in result_os.split('\n'):
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:   ', '')
+        print(prepare_result)
+        break
 ```
 
 ### Вывод скрипта при запуске при тестировании:
@@ -56,8 +67,26 @@ for result in result_os.split('\n'):
 Доработать скрипт выше так, чтобы он не только мог проверять локальный репозиторий в текущей директории, но и умел воспринимать путь к репозиторию, который мы передаём как входной параметр. Мы точно знаем, что начальство коварное и будет проверять работу этого скрипта в директориях, которые не являются локальными репозиториями.
 
 ### Ваш скрипт:
-```python
-???
+```
+import os
+import sys
+
+basedir = ""
+try:
+    basedir = sys.argv[1]
+except:
+    print("Invalid repository path specified")
+if basedir != "":
+    bash_command = [f"cd {basedir}",  "git status "]
+    result_os_list = os.listdir(basedir);
+    if result_os_list.__contains__(".git"):
+        result_os = os.popen(' && '.join(bash_command)).read()
+        for result in result_os.split('\n'):
+            if result.find('новый файл') != -1:
+                prepare_result = result.replace('новый файл:', basedir)
+                print(prepare_result)
+    else:
+        print("Specified directory has not contain a git repository")
 ```
 
 ### Вывод скрипта при запуске при тестировании:
