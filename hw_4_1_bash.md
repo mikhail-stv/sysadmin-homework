@@ -55,8 +55,8 @@ done
 
 ### Ваш скрипт:
 ```
-#/bin/bash
-ip=(192.168.0.1 173.194.222.113 87.250.250.242)
+#!/bin/bash
+hosts=(192.168.0.1 173.194.222.113 87.250.250.242)
 for h in ${hosts[@]}
 do
     for i in {1..5}
@@ -64,9 +64,9 @@ do
             curl -s --connect-timeout 2 http://$h:80 > /dev/null
             if (($? != 0))
             then
-               echo $(date) " | Host " $h " недоступен по порту 80"  >> /tmp/hostlog.log
+               echo $(date) " | Host " $h " недоступен по порту 80"  >> /tmp/net.log
             else
-               echo $(date)" | Host " $h " доступен по порту 80"  >> /tmp/hostlog.log
+               echo $(date)" | Host " $h " доступен по порту 80"  >> /tmp/net.log
             fi
             sleep 1
     done
