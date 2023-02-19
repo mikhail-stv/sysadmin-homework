@@ -80,6 +80,7 @@ done
 
 ### Ваш скрипт:
 ```
+#!/bin/bash
 hosts=(192.168.0.1 173.194.222.113 87.250.250.242)
 while ((1==1))
 do
@@ -88,7 +89,7 @@ do
         curl -s --connect-timeout 2 http://$h:80 > /dev/null
         if (($? != 0))
         then
-                echo $(date) " | Error | Host " $h " недоступен по порту 80"  >> hostlog.log
+                echo $(date) " | Error | Host " $h " недоступен по порту 80"  >> /tmp/net_other.log
         else
                 exit
         fi
@@ -96,7 +97,7 @@ do
   done
 done
 ```
-
+  
 ---
 
 ## Дополнительное задание (со звездочкой*) - необязательно к выполнению
