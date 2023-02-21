@@ -13,8 +13,8 @@ c = a + b
 | Вопрос  | Ответ |
 | ------------- | ------------- |
 | Какое значение будет присвоено переменной `c`?  | TypeError: unsupported operand type(s) for +: 'int' and 'str'  |
-| Как получить для переменной `c` значение 12?  | c=str(a)+b |
-| Как получить для переменной `c` значение 3?  | c=a+int(b) |
+| Как получить для переменной `c` значение 12?  | c = str(a) + b |
+| Как получить для переменной `c` значение 3?  | c = a + int(b) |
 
 ------
 
@@ -47,12 +47,12 @@ import os
 
 bash_command = ["cd ~/netology/sysadm-homeworks", "git status"]
 result_os = os.popen(' && '.join(bash_command)).read()
-is_change = False
+#is_change = False
 for result in result_os.split('\n'):
-    if result.find('modified') != -1:
-        prepare_result = result.replace('\tmodified:   ', '')
-        print(prepare_result)
-        break
+    if result.find('изменено') != -1:
+        prepare_result = result.replace('\tизменено:      ', '')
+        print(os.getcwd() ,'/' , prepare_result, sep='')
+        #break
 ```
 
 ### Вывод скрипта при запуске при тестировании:
