@@ -117,11 +117,40 @@ mike@sky:~/Git/devops-netology$ ./test.py ~/Git
 Также, должна быть реализована возможность проверки текущего IP сервиса c его IP из предыдущей проверки. Если проверка будет провалена - оповестить об этом в стандартный вывод сообщением: [ERROR] <URL сервиса> IP mismatch: <старый IP> <Новый IP>. Будем считать, что наша разработка реализовала сервисы: `drive.google.com`, `mail.google.com`, `google.com`.
 
 ### Ваш скрипт:
-```python
-???
+```
+#!/usr/bin/env python3
+
+import socket
+import time
+
+hosts = {'drive.google.com':'0.0.0.0', 'mail.google.com':'0.0.0.0', 'google.com':'0.0.0.0'}
+while 1 == 1 :
+  for host in hosts :
+    ip = socket.gethostbyname(host)
+    if ip != hosts[host] :
+      print(' [ERROR] ' + str(host) +' IP mistmatch: '+hosts[host]+' '+ip)
+      hosts[host]=ip
+    else :
+        print(str(host) + ' ' + ip)
+    time.sleep(2)
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+[ERROR] drive.google.com IP mistmatch: 0.0.0.0 64.233.165.194
+ [ERROR] mail.google.com IP mistmatch: 0.0.0.0 64.233.161.83
+ [ERROR] google.com IP mistmatch: 0.0.0.0 209.85.233.138
+drive.google.com 64.233.165.194
+mail.google.com 64.233.161.83
+ [ERROR] google.com IP mistmatch: 209.85.233.138 209.85.233.102
+drive.google.com 64.233.165.194
+ [ERROR] mail.google.com IP mistmatch: 64.233.161.83 64.233.161.19
+ [ERROR] google.com IP mistmatch: 209.85.233.102 209.85.233.101
+drive.google.com 64.233.165.194
+ [ERROR] mail.google.com IP mistmatch: 64.233.161.19 64.233.161.83
+google.com 209.85.233.101
+drive.google.com 64.233.165.194
+ [ERROR] mail.google.com IP mistmatch: 64.233.161.83 64.233.161.17
+ [ERROR] google.com IP mistmatch: 209.85.233.101 209.85.233.113
+drive.google.com 64.233.165.194
 ```
