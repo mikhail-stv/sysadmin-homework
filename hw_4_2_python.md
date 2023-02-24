@@ -69,30 +69,36 @@ mike@sky:~$ ./test.py
 
 ### Ваш скрипт:
 ```
+#!/usr/bin/env python3
+
 import os
 import sys
 
-basedir = ""
-try:
-    basedir = sys.argv[1]
-except:
-    print("Invalid repository path specified")
-if basedir != "":
-    bash_command = [f"cd {basedir}",  "git status "]
-    result_os_list = os.listdir(basedir);
-    if result_os_list.__contains__(".git"):
-        result_os = os.popen(' && '.join(bash_command)).read()
-        for result in result_os.split('\n'):
-            if result.find('новый файл') != -1:
-                prepare_result = result.replace('новый файл:', basedir)
-                print(prepare_result)
-    else:
-        print("Specified directory has not contain a git repository")
+path=os.getcwd()
+if len(sys.argv)!=1:
+    path=sys.argv[1]
+bash_command = [f'cd {path}', 'git status 2>&1']
+result_os = os.popen(' && '.join(bash_command)).read()
+for result in result_os.split('\n'):
+    if result.find('fatal') != -1:
+        print('Каталог не является GIT репозиторием')
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:      ', '')
+        print(os.getcwd() ,'/' , prepare_result, sep='')
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+mike@sky:~/Git/devops-netology$ ./test.py
+/home/mike/Git/devops-netology/	modified:   has_been_moved
+/home/mike/Git/devops-netology/	modified:   terraform/README.md
+/home/mike/Git/devops-netology/	modified:   test.py
+mike@sky:~/Git/devops-netology$ ./test.py ~/Git/devops-netology/terraform/
+/home/mike/Git/devops-netology/	modified:   ../has_been_moved
+/home/mike/Git/devops-netology/	modified:   README.md
+/home/mike/Git/devops-netology/	modified:   ../test.py
+mike@sky:~/Git/devops-netology$ ./test.py ~/Git
+Каталог не является GIT репозиторием
 ```
 
 ------
