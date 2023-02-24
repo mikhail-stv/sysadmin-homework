@@ -57,7 +57,8 @@ for result in result_os.split('\n'):
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-???
+mike@sky:~$ ./test.py
+/home/mike/	modified:   has_been_moved
 ```
 
 ------
