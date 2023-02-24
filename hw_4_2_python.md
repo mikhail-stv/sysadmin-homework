@@ -45,12 +45,12 @@ for result in result_os.split('\n'):
 
 import os
 
-bash_command = ["cd ~/netology/sysadm-homeworks", "git status"]
+bash_command = ["cd ~/Git/devops-netology", "git status"]
 result_os = os.popen(' && '.join(bash_command)).read()
 #is_change = False
 for result in result_os.split('\n'):
-    if result.find('изменено') != -1:
-        prepare_result = result.replace('\tизменено:      ', '')
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:      ', '')
         print(os.getcwd() ,'/' , prepare_result, sep='')
         #break
 ```
