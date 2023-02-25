@@ -2,7 +2,7 @@
 
 Мы выгрузили JSON, который получили через API-запрос к нашему сервису:
 
-```
+```json
     { "info" : "Sample JSON output from our service\t",
         "elements" :[
             { "name" : "first",
@@ -20,7 +20,7 @@
 
 ### Ваш скрипт:
 
-```
+```json
 {
    "info":"Sample JSON output from our service\t",
    "elements":[
@@ -53,51 +53,101 @@
 ### Ваш скрипт:
 
 ```python
-???
+import socket
+import time
+import json
+import yaml
+
+# задаем словарь
+service_addr = {
+    'drive.google.com': '0',
+    'mail.google.com': '0',
+    'google.com': '0'
+}
+
+# Получаем текущие на момент запуска скрипта значения (чтобы в будущем не сравнивать с 0).
+for item in service_addr:
+    initial_addr = socket.gethostbyname(item)
+    service_addr[item] = initial_addr
+    # Записываем полученные данные в виде json файла
+    with open(item + '.json', 'w') as output_json:
+        # Формируем json
+        data_json = json.dumps({item: service_addr[item]})
+        # Записываем его в файл
+        output_json.write(data_json)
+
+    # Записываем полученные данные в виде yaml файла
+    with open(item + '.yaml', 'w') as output_yaml:
+        # Формируем yaml
+        data_yaml = yaml.dump([{item: service_addr[item]}])
+        # Записываем его в файл
+        output_yaml.write(data_yaml)
+
+while True:
+    # Перебираем все ключи в словаре
+    for item in service_addr:
+        old_addr = service_addr[item]
+        new_addr = socket.gethostbyname(item)
+        # Если старое и новое не совпадают - адрес изменился. Перезаписываем значение в словаре и выводим ошибку
+        if new_addr != old_addr:
+            service_addr[item] = new_addr
+            # Записываем полученные данные в виде json файла
+            with open(item + '.json', 'w') as output_json:
+                # Формируем json
+                data_json = json.dumps({item: service_addr[item]})
+                # Записываем его в файл
+                output_json.write(data_json)
+
+            # Записываем полученные данные в виде yaml файла
+            with open(item + '.yaml', 'w') as output_yaml:
+                # Формируем yaml
+                data_yaml = yaml.dump([{item: service_addr[item]}])
+                # Записываем его в файл
+                output_yaml.write(data_yaml)
+            # Вывод ошибки
+            print("[ERROR] " + item + " IP mismatch: old IP " + old_addr + ", new IP " + new_addr)
+        print(item + " - " + service_addr[item])
+    print("######################################")
+    time.sleep(10)
 ```
 
 ### Вывод скрипта при запуске во время тестирования:
 
 ```
-???
+/usr/bin/python3.10 /home/mike/Documents/ip_test.py 
+drive.google.com - 64.233.162.194
+[ERROR] mail.google.com IP mismatch: old IP 64.233.165.17, new IP 64.233.165.18
+mail.google.com - 64.233.165.18
+[ERROR] google.com IP mismatch: old IP 74.125.205.102, new IP 74.125.205.139
+google.com - 74.125.205.139
+######################################
+drive.google.com - 64.233.162.194
+[ERROR] mail.google.com IP mismatch: old IP 64.233.165.18, new IP 64.233.165.17
+mail.google.com - 64.233.165.17
+[ERROR] google.com IP mismatch: old IP 74.125.205.139, new IP 74.125.205.102
+google.com - 74.125.205.102
 ```
 
 ### JSON-файл(ы), который(е) записал ваш скрипт:
 
 ```json
-???
+{"drive.google.com": "64.233.162.194"}
+```
+```json
+{"google.com": "74.125.205.138"}
+```
+```json
+{"mail.google.com": "64.233.165.17"}
 ```
 
 ### YAML-файл(ы), который(е) записал ваш скрипт:
 
 ```yaml
-???
+- drive.google.com: 64.233.162.194
 ```
-
----
-
-## Задание со звёздочкой* 
-
-Это самостоятельное задание, его выполнение необязательно.
-____
-
-Так как команды в нашей компании никак не могут прийти к единому мнению о том, какой формат разметки данных использовать: JSON или YAML, нам нужно реализовать парсер из одного формата в другой. Он должен уметь:
-
-   * принимать на вход имя файла;
-   * проверять формат исходного файла. Если файл не JSON или YAML — скрипт должен остановить свою работу;
-   * распознавать, какой формат данных в файле. Считается, что файлы *.json и *.yml могут быть перепутаны;
-   * перекодировать данные из исходного формата во второй доступный —  из JSON в YAML, из YAML в JSON;
-   * при обнаружении ошибки в исходном файле указать в стандартном выводе строку с ошибкой синтаксиса и её номер;
-   * полученный файл должен иметь имя исходного файла, разница в наименовании обеспечивается разницей расширения файлов.
-
-### Ваш скрипт:
-
-```python
-???
+```yaml
+- google.com: 74.125.205.138
 ```
-
-### Пример работы скрипта:
-
-???
-
-----
+```yaml
+- mail.google.com: 64.233.165.17
+```
